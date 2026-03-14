@@ -1,8 +1,11 @@
 export module IAtspAlgorithm;
 
+import TestData;
+import AlgorithmResult;
+
 export class IAtspAlgorithm {
 public:
     virtual ~IAtspAlgorithm() = default;
 
-    virtual void SolveProblem() const = 0;
+    virtual AlgorithmResult SolveProblem(const TestData& data) const = 0;
 };

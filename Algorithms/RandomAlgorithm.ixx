@@ -1,52 +1,26 @@
 module;
-
+#include <random>
 #include <limits>
 
-export module BF;
+export module RandomAlgorithm;
 
 import IAtspAlgorithm;
 import TestData;
 import AlgorithmResult;
 import DefinitelyNotAVector;
 
-export class BF : public IAtspAlgorithm
+export class RandomAlgorithm : public IAtspAlgorithm
 {
-    bool NextPermutation(DefinitelyNotAVector<int>& p) const
-    {
-        int n = static_cast<int>(p.size());
-        if (n <= 1) return false;
-
-        // 1. Znalezienie najwiekszego i, takiego ze p[i] < p[i + 1]
-        int i = n - 2;
-        while (i >= 0 && p[i] >= p[i + 1]) --i;
-
-        if (i < 0) return false;
-
-        // 2. Znalezienie najwiekszego j > i, takiego ze p[j] > p[i]
-        int j = n - 1;
-        while (p[j] <= p[i]) --j;
-
-        // 3. Zamiana miejscami p[i] i p[j]
-        int temp = p[i];
-        p[i] = p[j];
-        p[j] = temp;
-
-        // 4. Odwrocenie kolejnosci elementow od i + 1 do konca
-        int left = i + 1;
-        int right = n - 1;
-        while (left < right)
-        {
-            temp = p[left];
-            p[left] = p[right];
-            p[right] = temp;
-            ++left;
-            --right;
-        }
-
-        return true;
-    }
+    int permutations_;
 
 public:
+    explicit RandomAlgorithm(int permutations = 100) : permutations_(permutations) {}
+
+    void SetPermutations(int permutations)
+    {
+        permutations_ = permutations;
+    }
+    
     AlgorithmResult SolveProblem(const TestData& data) const override
     {
         int n = data.size;
@@ -58,17 +32,29 @@ public:
             return result;
         }
 
-        // Inicjalizacja permutacji poczatkowej {1, 2, ..., n-1}
+        result.path = DefinitelyNotAVector<int>(n + 1);
+        
         DefinitelyNotAVector<int> p(n - 1);
         for (int i = 0; i < n - 1; ++i)
         {
             p[i] = i + 1;
         }
 
-        result.path = DefinitelyNotAVector<int>(n + 1);
-        
-        do
+        std::random_device rd;
+        std::mt19937 gen(rd());
+
+        for (int k = 0; k < permutations_; ++k)
         {
+            for (int i = n - 2; i > 0; --i)
+            {
+                std::uniform_int_distribution<int> dist(0, i);
+                int j = dist(gen);
+                
+                int temp = p[i];
+                p[i] = p[j];
+                p[j] = temp;
+            }
+            
             int current_cost = data.matrix[0][p[0]];
             for (int i = 0; i < n - 2; ++i)
             {
@@ -86,7 +72,7 @@ public:
                 }
                 result.path[n] = 0;
             }
-        } while (NextPermutation(p));
+        }
 
         return result;
     }

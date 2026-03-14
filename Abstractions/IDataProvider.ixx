@@ -1,9 +1,11 @@
 export module IDataProvider;
 
+import TestData;
+
 export class IDataProvider
 {
 public:
-    virtual ~IDataProvider() = 0;
+    virtual ~IDataProvider() = default;
 
-    virtual void GetRequiredData() const = 0;
+    virtual TestData GetRequiredData() const = 0;
 };

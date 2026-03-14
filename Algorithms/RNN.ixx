@@ -1,11 +1,13 @@
 export module RNN;
 
-import AtspAlgorithm;
+import IAtspAlgorithm;
+import TestData;
+import AlgorithmResult;
 
 export class RNN : public IAtspAlgorithm
 {
 public:
-    void SolveProblem() const override
+    AlgorithmResult SolveProblem(const TestData& data) const override
     {
 
     }
