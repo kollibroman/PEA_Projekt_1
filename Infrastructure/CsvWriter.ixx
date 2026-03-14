@@ -8,7 +8,6 @@ export module CsvWriter;
 
 import DefinitelyNotAVector;
 
-// Klasa do zapisu danych w formacie CSV
 export class CsvWriter
 {
 private:
@@ -33,8 +32,7 @@ public:
     {
         return file.is_open();
     }
-
-    // Zapis nagłówka CSV
+    
     void WriteHeader(const DefinitelyNotAVector<std::string>& headers)
     {
         if (!file.is_open() || header_written)
@@ -49,8 +47,7 @@ public:
         file << "\n";
         header_written = true;
     }
-
-    // Zapis wiersza z danymi (template dla różnych typów)
+    
     template<typename... Args>
     void WriteRow(Args... args)
     {
@@ -60,8 +57,7 @@ public:
         WriteRowHelper(args...);
         file << "\n";
     }
-
-    // Wymuszenie zapisu do pliku
+    
     void Flush()
     {
         if (file.is_open())
@@ -69,7 +65,6 @@ public:
     }
 
 private:
-    // Pomocnicza funkcja do rekurencyjnego zapisu argumentów
     template<typename T>
     void WriteRowHelper(T value)
     {
@@ -84,7 +79,6 @@ private:
     }
 };
 
-// Dedykowany writer dla wyników czasowych
 export class TimeResultsWriter
 {
 private:
@@ -118,7 +112,6 @@ public:
     }
 };
 
-// Dedykowany writer dla błędów względnych
 export class ErrorResultsWriter
 {
 private:

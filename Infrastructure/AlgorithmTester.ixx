@@ -17,7 +17,6 @@ import CsvWriter;
 
 export namespace AlgorithmTester
 {
-    // Testowanie czasu wykonania (bez zapisu do pliku)
     void TestExecutionTime(const IAtspAlgorithm& algorithm,
                            const IDataProvider& dataProvider,
                            int instances)
@@ -43,8 +42,8 @@ export namespace AlgorithmTester
                   << std::fixed << std::setprecision(3) << avg_time << " ms\n";
     }
 
-    // Testowanie czasu wykonania z automatycznym zapisem do CSV
-    void TestExecutionTimeWithCSV(const IAtspAlgorithm& algorithm,
+    
+    int TestExecutionTimeWithCSV(const IAtspAlgorithm& algorithm,
                                   const std::string& algorithm_name,
                                   const IDataProvider& dataProvider,
                                   int instances,
@@ -67,17 +66,15 @@ export namespace AlgorithmTester
         }
 
         double avg_time = total_time_ms / instances;
-
-        // Wyświetlenie na ekranie
+        
         std::cout << "N = " << current_size << " | Sredni czas: "
                   << std::fixed << std::setprecision(3) << avg_time << " ms\n";
-
-        // Automatyczny zapis do CSV
+        
         csv_writer.WriteTimeResult(algorithm_name, current_size, avg_time);
         csv_writer.Flush();
+        return avg_time;
     }
     
-    // Testowanie błędu względnego (bez zapisu do pliku)
     void TestRelativeError(const IAtspAlgorithm& test_algorithm,
                            const IAtspAlgorithm& reference_algo,
                            const IDataProvider& dataProvider,
@@ -102,8 +99,7 @@ export namespace AlgorithmTester
         std::cout << "N = " << current_size << " | Sredni blad: "
                   << std::fixed << std::setprecision(2) << avg_error << "%\n";
     }
-
-    // Testowanie błędu względnego z automatycznym zapisem do CSV
+    
     void TestRelativeErrorWithCSV(const IAtspAlgorithm& test_algorithm,
                                   const std::string& algorithm_name,
                                   const IAtspAlgorithm& reference_algo,

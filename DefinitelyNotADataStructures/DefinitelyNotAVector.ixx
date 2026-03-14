@@ -160,7 +160,18 @@ public:
         }
     }
 
-
+    [[nodiscard]] bool Contains(const T& value) const
+    {
+        for (size_t i = 0; i < size_; ++i)
+        {
+            if (data[i] == value)
+            {
+                return true; 
+            }
+        }
+        return false;
+    }
+    
     T* begin()
     {
         return data;

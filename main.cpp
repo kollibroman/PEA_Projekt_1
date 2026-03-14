@@ -20,8 +20,7 @@ void RunBruteForceTimeExperiment(const BF& bf)
     std::cout << "\n=== EKSPERYMENTY BF - POMIAR CZASU ===\n";
     std::cout << "Celem jest znalezienie N dla czasu ~2 minuty\n";
     std::cout << "Wyniki automatycznie zapisywane do: times.csv\n\n";
-
-    // Tworzenie CSV writer
+    
     TimeResultsWriter csv_writer("times.csv");
 
     if (!csv_writer.IsOpen())
@@ -43,25 +42,18 @@ void RunBruteForceTimeExperiment(const BF& bf)
     test_sizes.push_back(14);
     test_sizes.push_back(15);
 
-    for (size_t idx = 0; idx < test_sizes.size(); ++idx)
+    for (int n : test_sizes)
     {
-        int n = test_sizes[idx];
         RandomDataGenerator rdg(n);
 
         std::cout << "Testowanie N = " << n << "... ";
         
-        AlgorithmTester::TestExecutionTimeWithCSV(bf, "BruteForce", rdg, 1, csv_writer);
-        
-        TestData data = rdg.GetRequiredData();
-        auto start = std::chrono::high_resolution_clock::now();
-        bf.SolveProblem(data);
-        auto end = std::chrono::high_resolution_clock::now();
-        std::chrono::duration<double> duration = end - start;
+        auto duration = AlgorithmTester::TestExecutionTimeWithCSV(bf, "BruteForce", rdg, 1, csv_writer);
 
-        if (duration.count() > 120.0)
+        if (duration > 120000.0)
         {
             std::cout << "\nPrzekroczono 2 minuty dla N = " << n << " (czas: "
-                      << std::fixed << std::setprecision(2) << duration.count() << " s)\n";
+                      << std::fixed << std::setprecision(2) << duration / 1000 << " s)\n";
             break;
         }
     }
@@ -80,8 +72,7 @@ void RunRelativeErrorExperiment(const BF& bf, NN& nn, RNN& rnn, RandomAlgorithm&
     std::cout << "Testowane algorytmy: Random(10N permutacji), NN, RNN\n";
     std::cout << "Algorytm referencyjny: BF (przegląd zupełny)\n";
     std::cout << "Wyniki automatycznie zapisywane do: errors.csv\n\n";
-
-    // Tworzenie CSV writer
+    
     ErrorResultsWriter csv_writer("errors.csv");
 
     if (!csv_writer.IsOpen())
@@ -234,9 +225,9 @@ int main()
 
             int result = system("python3 Python/plot_generator.py");
             if (result == 0)
-                std::cout << "\n✓ Wykresy wygenerowane pomyślnie!\n";
+                std::cout << "\n Wykresy wygenerowane pomyślnie!\n";
             else
-                std::cout << "\n✗ Błąd podczas generowania wykresów.\n";
+                std::cout << "\n Błąd podczas generowania wykresów.\n";
             std::cout << "Sprawdź czy pliki times.csv i errors.csv istnieją.\n";
             std::cout << "Sprawdź czy Python i biblioteki (pandas, matplotlib) są zainstalowane.\n";
 
