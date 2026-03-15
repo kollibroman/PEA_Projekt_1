@@ -1,0 +1,275 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[polish]{babel}
+\usepackage{changepage}
+\usepackage[a4paper, margin=1in]{geometry}
+\usepackage{multicol}
+\usepackage{amsmath}
+\usepackage{gensymb}
+\usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{enumerate}
+\usepackage[shortlabels]{enumitem}
+\usepackage{array}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{karnaugh-map}
+\usepackage{tikz}
+\usepackage{verbatim}
+\usepackage{tabularx}
+\usepackage{caption}
+\usepackage{xcolor}
+\usepackage{lipsum}
+\usepackage{etoolbox}
+\usepackage[export]{adjustbox}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}}
+\renewcommand{\labelenumiii}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+\renewcommand{\labelenumiv}{\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}.\arabic{enumiv}}
+\begin{document}
+
+
+\begin{multicols}{3}
+    \begin{figure}[H]
+        \includegraphics[scale=0.4]{DOJEBANE_LOGO_PWR.png}
+        \label{fig:enter-label}
+    \end{figure}
+    \hspace{80pt}
+    \begin{figure}[H]
+    \end{figure}
+    \begin{flushright}
+    \begin{figure}[H]
+        \includegraphics[scale=0.37]{w4n.png}
+        \centering
+        \caption*{\textbf{W4N}}
+        \label{fig:WYDZIAŁ INFORMATYKI I TELEKOMUNIKACJI}
+    \end{figure}
+    \end{flushright}
+\end{multicols}
+
+\vspace{75pt}
+
+\begin{center}
+    \textbf{\Large{Projektowanie efektywnych algorytmów - projekt}} 
+    \vspace{2pt}
+    \hrule
+    \vspace{4pt}
+    \textbf{\Large{Implementacja i analiza efektywności algorytmu losowego, zachłannego - Nearest Neighour
+(NN) i Repetitive Nearest Neighbour (RNN) oraz Brute-Force (przegląd zupełny)}} 
+\end{center}
+
+\vspace{75pt}
+\begin{center}
+    \Large{
+    \textbf{Autor: } \\
+    Filip Kwiek 280947 \\
+    }
+\end{center}
+\newpage
+\tableofcontents
+
+\section{Wstęp teoretyczny}
+
+Projekt dotyczy rozwiązywania asymetrycznego problemu komiwojażera (ATSP). 
+Problem ten polega na znalezieniu najkrótszej możliwej trasy, która odwiedza każde z zadanych miast dokładnie raz i wraca do punktu startowego, przy czym odległości między miastami mogą być różne w zależności od kierunku podróży.
+
+\subsection{Opis problemu}
+
+Asymteryczny problem komiwojażera (ATSP) jest rozszerzeniem klasycznego problemu komiwojażera (TSP), w którym odległości między miastami nie są symetryczne. Oznacza to, że odległość z miasta A do miasta B może być różna od odległości z miasta B do miasta A. Celem jest znalezienie najkrótszej trasy, która odwiedza każde miasto dokładnie raz i wraca do punktu startowego.
+Jednym słowem, problem ten polega na znalezieniu cyklu Hamiltona o minimalnym koszcie w grafie skierowanym, gdzie wierzchołki reprezentują miasta, a krawędzie reprezentują odległości między nimi.
+
+\subsection{Opis Algorytmów}
+
+Do rozwiązywania tego problemu zostały zaimplementowane i zbadane 4 algorytmy.
+
+\subsubsection{Algorytm brute-force (przegląd zupełny)}
+
+W tym algorytmie generowane są wszystkie możliwe permutacje miast, a następnie dla każdej z nich
+obliczany jest koszt trasy. Wybierana jest trasa o najniższym możliwym koszcie. 
+Analizowana tutaj jest przestrzeń rozwiązań o rozmiarze N!, co generuje dużą złożoność czasową.
+Algorytm ten można optymalizować na różne sposoby, między innymi przerywanie sprawdzania gałęzi, jeżeli od razu widać, że koszt jest większy niż minimanlny,
+jednakże dostosowując algorytm do wymagań projektowych, jedyną zastosowaną optymalizacją było zamrożenie wierzchołka początkowego.
+Zmniejszyło to ilość rozwiązań do sprawdzenia, jednocześnie zostawiając optymalne rozwiązanie.\\
+Algorytm ten w każdym wypadku zwróci optymalne rozwiązanie, jednakże przez dużą złożoność obliczeniową, dla dużych instacji problemu czas wykonania algorytmu może być bardzo długi. \\
+\textbf{Pseudokod:} \\
+\begin{verbatim}
+Funkcja BruteForce(MacierzKosztow, N):
+    NajlepszyKoszt = NIESKOŃCZONOŚĆ
+    NajlepszaTrasa = PustaLista
+    
+    Miasta = [1, 2, ..., N-1] 
+    
+    Dla każdej możliwej Permutacji P ze zbioru Miasta:
+        AktualnyKoszt = 0
+        AktualneMiasto = 0 
+        
+        Dla każdego MiastaNastepnego w P:
+            AktualnyKoszt += MacierzKosztow[AktualneMiasto][MiastoNastepnego]
+            AktualneMiasto = MiastoNastepnego
+            
+        AktualnyKoszt += MacierzKosztow[AktualneMiasto][0]
+        
+        Jeśli AktualnyKoszt < NajlepszyKoszt:
+            NajlepszyKoszt = AktualnyKoszt
+            NajlepszaTrasa = [0] + P + [0]
+            
+    Zwróć NajlepszyKoszt, NajlepszaTrasa
+\end{verbatim}
+\textbf{Złożoność obliczeniowa}: O(N!) (po optymalizacji O((N-1)!)) \\
+\textbf{Zalety}: Zawsze zwraca optymalne rozwiązanie. \\
+\textbf{Wady}: Bardzo duża złożoność, dla dużych instancji problemu wymagany jest bardzo mocny sprzęt lub bardzo długi czas wykonania (Dla N > 15 czas przekracza 8h na testowanym sprzęcie).
+
+\subsubsection{Algorytm losowy}
+
+Algorytm losowy jest algorytmem probabilistycznym, który generuje losowe trasy i oblicza ich koszty.
+Po określonej liczbie iteracji lub po osiągnięciu określonego limitu czasu, algorytm zwraca najlepszą znalezioną trasę.
+Algorytm ten działa w zależności od zdefiniowanej liczby iteracji i prawdopodobieństwo otrzymia optymalnego rozwiązania będzie rosło wraz z liczbą iteracji.
+\textbf{Pseudokod:} \\
+\begin{verbatim}
+Funkcja RandomSearch(MacierzKosztow, N, K):
+    NajlepszyKoszt = NIESKOŃCZONOŚĆ
+    NajlepszaTrasa = PustaLista
+    Miasta = [1, 2, ..., N-1]
+    
+    Wykonaj K razy:
+        LosowoPrzetasuj(Miasta) // np. tasowanie Fishera-Yatesa
+        AktualnaTrasa = [0] + Miasta + [0]
+        
+        AktualnyKoszt = ObliczCalkowityKosztTrasy(AktualnaTrasa, MacierzKosztow)
+        
+        Jeśli AktualnyKoszt < NajlepszyKoszt:
+            NajlepszyKoszt = AktualnyKoszt
+            NajlepszaTrasa = AktualnaTrasa
+            
+    Zwróć NajlepszyKoszt, NajlepszaTrasa
+\end{verbatim}
+\textbf{Złożoność obliczeniowa}: O(N * K), gdzie K to liczba iteracji \\
+\textbf{Zalety}: Można określić jak bardzo optymalne rozwiązanie chcemy. \\
+\textbf{Wady}: Nie gwarantuje znalezienia optymalnego rozwiązania, wynik zależy od liczby iteracji i losowości.
+
+
+\subsubsection{Algorytm Nearest Neighbour}
+
+Jest to algorytm zachłanny, który zaczyna od wybranego miasta i w każdym kroku wybiera najbliższe nieodwiedzone miasto jako następne do odwiedzenia.
+Proces ten jest powtarzany, aż wszystkie miasta zostaną odwiedzone, a następnie wraca do punktu startowego. \\
+\textbf{Pseudokod:} \\
+\begin{verbatim}
+    Funkcja NearestNeighbor(MacierzKosztow, N):
+    Odwiedzone = Tablica N wartości FAŁSZ
+    AktualneMiasto = 0
+    Odwiedzone[AktualneMiasto] = PRAWDA
+    CalkowityKoszt = 0
+    
+    Wykonaj N-1 razy:
+        MinKoszt = NIESKOŃCZONOŚĆ
+        NajlepszySasiad = -1
+        
+        Dla każdego Sasiada od 0 do N-1:
+            Jeśli (Odwiedzone[Sasiad] == FAŁSZ 
+                ORAZ MacierzKosztow[AktualneMiasto][Sasiad] < MinKoszt):
+                MinKoszt = MacierzKosztow[AktualneMiasto][Sasiad]
+                NajlepszySasiad = Sasiad
+                
+        CalkowityKoszt += MinKoszt
+        Odwiedzone[NajlepszySasiad] = PRAWDA
+        AktualneMiasto = NajlepszySasiad
+        
+    CalkowityKoszt += MacierzKosztow[AktualneMiasto][0] 
+    
+    Zwróć CalkowityKoszt
+\end{verbatim}
+\textbf{Złożoność obliczeniowa}: $O(N^2)$ \\
+\textbf{Zalety}: Szybki i prosty do implementacji. \\
+\textbf{Wady}: Nie gwarantuje znalezienia optymalnego rozwiązania
+
+\subsubsection{Algorytm Repetitive Nearest Neighbour}
+
+To zmodyfikowana wersja algorytmu Nearest Neighbour, która uruchamia algorytm NN dla każdego możliwego miasta startowego i wybiera najlepszy wynik spośród wszystkich uruchomień. \\
+\textbf{Pseudokod:} \\
+\begin{verbatim}
+Globalna Zmienna NajlepszyKosztRNN = NIESKOŃCZONOŚĆ
+
+Funkcja RNN_Modyfikowany(MacierzKosztow, N):
+    Dla każdego MiastaStartowego od 0 do N-1:
+        Odwiedzone = Tablica N wartości FAŁSZ
+        Odwiedzone[MiastoStartowe] = PRAWDA
+        
+        EksplorujRNN(MiastoStartowe, MiastoStartowe, 1, 0, Odwiedzone, MacierzKosztow, N)
+        
+    Zwróć NajlepszyKosztRNN
+
+Funkcja EksplorujRNN(Start, AktualneMiasto, OdwiedzonoLiczba, AktualnyKoszt, Odwiedzone, Macierz, N):
+    Jeśli OdwiedzonoLiczba == N:
+        KosztKoncowy = AktualnyKoszt + Macierz[AktualneMiasto][Start]
+        Jeśli KosztKoncowy < NajlepszyKosztRNN:
+            NajlepszyKosztRNN = KosztKoncowy
+        Zakończ funkcję
+        
+    MinKoszt = NIESKOŃCZONOŚĆ
+    Dla każdego Sasiada od 0 do N-1:
+        Jeśli (Odwiedzone[Sasiad] == FAŁSZ 
+            ORAZ Macierz[AktualneMiasto][Sasiad] < MinKoszt):
+            MinKoszt = Macierz[AktualneMiasto][Sasiad]
+            
+    Dla każdego Sasiada od 0 do N-1:
+        Jeśli (Odwiedzone[Sasiad] == FAŁSZ 
+            ORAZ Macierz[AktualneMiasto][Sasiad] == MinKoszt):
+            Odwiedzone[Sasiad] = PRAWDA
+            
+            EksplorujRNN(Start, Sasiad, OdwiedzonoLiczba + 1, AktualnyKoszt + MinKoszt, Odwiedzone, Macierz, N)
+            
+            Odwiedzone[Sasiad] = FAŁSZ
+\end{verbatim}
+\textbf{Złożoność obliczeniowa}: $O(N^3)$ \\
+\textbf{Zalety}: Lepsze wyniki niż algorytm NN,
+gdyż rozważa wszystkie możliwe punkty startowe i rozgałęzia się na równe koszty. \\
+\textbf{Wady}: Gwarantuje znalezienia optymalnego rozwiązania.
+\section{Plan Badania}
+
+Ze względu na wymagania projektowe, badania zostały podzielone na dwie części. Pierwsza z nich dotyczy algorytmu brute-force, natomiast druga skupia się na porównaniu 
+pozostałych algorytmów względem algorytmu BF.
+Dla algorytmu BF należało znaleźć liczbę wierzchołków, dla której czas wykonania algorytmu przekroczy 2 minuty,
+natomiast dla pozostałych algorytmów należało porównać ich czas wykonania względem algorytmu BF dla tej samej liczby wierzchołków i oszacować błąd względny wyniku.
+
+\subsection{Wykorzystany sprzęt}
+
+\begin{itemize}
+    \item Procesor: Amd Ryzen 7 5700X3D 4.95GHz
+    \item Pamięć RAM: 48GB DDR4 2800MHz
+    \item System operacyjny: EndeavourOS (Arch Linux) - kernel 6.19.8-xanmod-1
+\end{itemize}
+
+\subsection{Badanie algorytmu brute-force}
+
+Do zbadania algorytmu BF posłużono się następującą metodologią:
+
+\begin{itemize}
+    \item Generacja losowego grafu pełnego o pewnej liczbie wierzchołków wg. specyfikacji zadania.
+    \item Item uruchomienie algorytmu BF na wygenerowanym grafie i pomiar czasu jego wykonania.
+\end{itemize}
+
+Badania zostały wykonane iteracyjnie, za każdym razem zwiększając liczbę wierzchołków o 1, aż do momentu, gdy czas wykonania algorytmu przekroczył 2 minuty.
+Zakres wierzchołków został dobrany na metodą prób i błędów oraz zbiór testowy zawierał się w przedziale od 8 do 15 wierzchołków.
+
+\subsection{Badanie reszty algorytmów względem algorytmu BF}
+
+Do zbadania reszty algorytmów posłużono się następującą metodologią:
+
+\begin{itemize}
+    \item Generacja losowego grafu pełnego o pewnej liczbie wierzchołków wg. specyfikacji zadania.
+    \item Item uruchomienie algorytmu BF na wygenerowanym grafie i pomiar czasu jego wykonania.
+    \item Uruchomienie algorytmu losowego, NN i RNN na tym samym grafie i pomiar czasu ich wykonania.
+    \item Oszacowanie błędu względnego wyników algorytmów losowego, NN i RNN względem algorytmu BF.
+\end{itemize}
+
+Badanie to zostało wykonane dla 100 różnych losowych instacji grafów pełnych o liczbie wierzchołków z przedziału od 10 do 14.
+
+
+\section{Wyniki Badania}
+
+\subsection{Algorytm BF}
+
+\section{Wnioski}
+
+\end{document}

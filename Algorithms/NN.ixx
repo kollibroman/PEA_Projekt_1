@@ -12,11 +12,6 @@ export class NN : public IAtspAlgorithm
 public:
     AlgorithmResult SolveProblem(const TestData& data) const override
     {
-        return SolveForStartCity(data, 0);
-    }
-    
-    AlgorithmResult SolveForStartCity(const TestData& data, int start_city) const
-    {
         int n = data.size;
         AlgorithmResult result;
         result.cost = 0;
@@ -26,7 +21,7 @@ public:
         DefinitelyNotAVector<bool> visited(n, false);
         result.path = DefinitelyNotAVector<int>(n + 1);
 
-        int current_city = start_city;
+        int current_city = 0;
         visited[current_city] = true;
         result.path[0] = current_city;
 
@@ -43,15 +38,18 @@ public:
                     best_next_city = j;
                 }
             }
-
-            visited[best_next_city] = true;
-            result.cost += min_cost;
-            current_city = best_next_city;
-            result.path[step] = current_city;
+            
+            if (best_next_city != -1)
+            {
+                visited[best_next_city] = true;
+                result.cost += min_cost;
+                current_city = best_next_city;
+                result.path[step] = current_city;
+            }
         }
         
-        result.cost += data.matrix[current_city][start_city];
-        result.path[n] = start_city;
+        result.cost += data.matrix[current_city][0];
+        result.path[n] = 0;
 
         return result;
     }

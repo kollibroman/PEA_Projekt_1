@@ -11,6 +11,7 @@ target_sources(Projekt_1 PUBLIC
         Algorithms/NN.ixx
         Algorithms/RNN.ixx
         Algorithms/BF.ixx
+        Algorithms/BFHeap.ixx
         Algorithms/RandomAlgorithm.ixx
         Infrastructure/AlgorithmTester.ixx
         Abstractions/IDataProvider.ixx

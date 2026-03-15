@@ -3,7 +3,7 @@
 #include <chrono>
 #include <iomanip>
 
-import BF;
+import BFHeap;
 import NN;
 import RNN;
 import RandomAlgorithm;
@@ -15,7 +15,7 @@ import AlgorithmResult;
 import DefinitelyNotAVector;
 import CsvWriter;
 
-void RunBruteForceTimeExperiment(const BF& bf)
+void RunBruteForceTimeExperiment(const BFHeap& bf)
 {
     std::cout << "\n=== EKSPERYMENTY BF - POMIAR CZASU ===\n";
     std::cout << "Celem jest znalezienie N dla czasu ~2 minuty\n";
@@ -66,7 +66,7 @@ void RunBruteForceTimeExperiment(const BF& bf)
     std::cin.get();
 }
 
-void RunRelativeErrorExperiment(const BF& bf, NN& nn, RNN& rnn, RandomAlgorithm& ra)
+void RunRelativeErrorExperiment(const BFHeap& bf, NN& nn, RNN& rnn, RandomAlgorithm& ra)
 {
     std::cout << "\n=== BLEDY WZGLEDNE - 100 INSTANCJI ===\n";
     std::cout << "Testowane algorytmy: Random(10N permutacji), NN, RNN\n";
@@ -88,8 +88,7 @@ void RunRelativeErrorExperiment(const BF& bf, NN& nn, RNN& rnn, RandomAlgorithm&
     {
         std::cout << "\n--- N = " << n << " ---\n";
         RandomDataGenerator rdg(n);
-
-        // Test algorytmu losowego z 10*N permutacji
+        
         ra.SetPermutations(10 * n);
         std::cout << "Random (10N=" << (10*n) << " perms): ";
         AlgorithmTester::TestRelativeErrorWithCSV(ra, "Random", bf, rdg, 100, csv_writer);
@@ -115,7 +114,7 @@ int main()
 {
     TestData current_data;
     
-    BF brute_force;
+    BFHeap brute_force;
     NN nearest_neighbour;
     RNN repetitive_nn;
     RandomAlgorithm random_algo;

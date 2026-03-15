@@ -11,27 +11,26 @@ import DefinitelyNotAVector;
 
 export class BF : public IAtspAlgorithm
 {
-    bool NextPermutation(DefinitelyNotAVector<int>& p) const
+    static inline bool NextPermutation(DefinitelyNotAVector<int>& p) 
     {
         int n = static_cast<int>(p.size());
         if (n <= 1) return false;
-
-        // 1. Znalezienie najwiekszego i, takiego ze p[i] < p[i + 1]
+        
         int i = n - 2;
         while (i >= 0 && p[i] >= p[i + 1]) --i;
 
-        if (i < 0) return false;
-
-        // 2. Znalezienie najwiekszego j > i, takiego ze p[j] > p[i]
+        if (i < 0) 
+        {
+            return false;
+        }
+        
         int j = n - 1;
         while (p[j] <= p[i]) --j;
-
-        // 3. Zamiana miejscami p[i] i p[j]
+        
         int temp = p[i];
         p[i] = p[j];
         p[j] = temp;
-
-        // 4. Odwrocenie kolejnosci elementow od i + 1 do konca
+        
         int left = i + 1;
         int right = n - 1;
         while (left < right)
@@ -57,8 +56,7 @@ public:
         {
             return result;
         }
-
-        // Inicjalizacja permutacji poczatkowej {1, 2, ..., n-1}
+        
         DefinitelyNotAVector<int> p(n - 1);
         for (int i = 0; i < n - 1; ++i)
         {
