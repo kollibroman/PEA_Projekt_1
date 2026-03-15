@@ -270,6 +270,14 @@ Badanie to zostało wykonane dla 100 różnych losowych instacji grafów pełnyc
 
 \subsection{Algorytm BF}
 
+\subsection{Pozostałe algorytmy}
+
 \section{Wnioski}
+
+\subsection{Implementacja}
+Na początku projektu implementacja algorytmu BF opierała się na tablicy 2d i dostępie za pomocą indeksów [i][j].
+Po testach okazało się że ma to pewien narzut czasowy, który dla instancji >= 14 był mocno widoczny.
+Po zmianie implementacji na tablicę 1d i dostępie za pomocą indeksów [i * N + j] oraz użyciu algorytmu Heap-a do genreowania permutacji,
+czas wykonania algorytmu BF dla instancji 14 spadł o około 30 sekund.   
 
 \end{document}
